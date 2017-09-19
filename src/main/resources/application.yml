@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost/postgres
+    username: postgres
+    password: iambatman
+  jpa:
+    generate-ddl: true
+
+server:
+  port: 8080
+
+zuul:
+  routes:
+    chat:
+      url: http://localhost:4001
+      
+ribbon:
+  eureka:
+    enabled: false
