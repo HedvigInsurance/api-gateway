@@ -35,4 +35,5 @@ public class GatewayApplication {
     public SessionControllerFilter payloadFilter() {
         return new SessionControllerFilter();
       }
+ 
 }

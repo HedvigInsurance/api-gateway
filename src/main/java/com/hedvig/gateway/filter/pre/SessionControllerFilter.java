@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 
 public class SessionControllerFilter extends ZuulFilter {
 
@@ -47,7 +48,12 @@ public class SessionControllerFilter extends ZuulFilter {
 		} catch (NotLoggedInException e) {
 			// TODO Auto-generated catch block
 			log.error(e.getMessage());
+			ctx.unset();
+			ctx.setResponseBody(e.getMessage());
+			ctx.setResponseStatusCode(HttpStatus.UNAUTHORIZED.value());
+			return null;
 		}
+        log.info("read this?");
         ctx.addZuulRequestHeader(HEADER, hid.toString());
         log.info(String.format("%s request to %s hedvig.session:%s", request.getMethod(), request.getRequestURL().toString(),uid.toString()));
 
