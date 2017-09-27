@@ -3,6 +3,7 @@ package com.hedvig.gateway.filter.pre;
 import com.hedvig.gateway.GatewayApplication;
 import com.hedvig.gateway.HedvigToken;
 import com.hedvig.gateway.NotLoggedInException;
+import com.hedvig.gateway.RedirectController;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 
@@ -48,15 +49,30 @@ public class SessionControllerFilter extends ZuulFilter {
 		} catch (NotLoggedInException e) {
 			// TODO Auto-generated catch block
 			log.error(e.getMessage());
-			ctx.unset();
-			ctx.setResponseBody(e.getMessage());
-			ctx.setResponseStatusCode(HttpStatus.UNAUTHORIZED.value());
+			log.info("uid:" + uid);
+			log.info("hid:" + hid);
+			
+			/*
+			 * Harsh response. Puts responsibility for login in on client
+			 * */
+			//ctx.unset();
+			//ctx.setResponseBody(e.getMessage());
+			//ctx.setResponseStatusCode(HttpStatus.UNAUTHORIZED.value());
+			
+			/*
+			 * Nice response. Server logs in user with new hedvig token.
+			 * */
+			if (uid == null) { uid = UUID.randomUUID(); }
+			httpSession.setAttribute(GatewayApplication.HEDVIG_SESSION, uid);
+			HedvigToken ht = RedirectController.login(uid);
+			log.info("Set " + HEADER + " to " + ht.toString());
+			ctx.addZuulRequestHeader(HEADER, ht.toString());
 			return null;
 		}
         log.info("read this?");
         ctx.addZuulRequestHeader(HEADER, hid.toString());
         log.info(String.format("%s request to %s hedvig.session:%s", request.getMethod(), request.getRequestURL().toString(),uid.toString()));
-
+       
         return null;
     }
 }

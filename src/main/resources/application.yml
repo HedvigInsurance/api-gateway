@@ -1,19 +1,15 @@
-spring:
-  datasource:
-    url: jdbc:postgresql://localhost/postgres
-    username: postgres
-    password: iambatman
-  jpa:
-    generate-ddl: true
-
 server:
   port: 8080
 
 zuul:
   routes:
-    chat:
-      url: http://localhost:4001
-      
+    bot-service_messages:
+      path: /messages/**
+      url: http://localhost:4081/messages/
+    bot-service_response:
+      path: /response/**
+      url: http://localhost:4081/response/
+            
 ribbon:
   eureka:
     enabled: false

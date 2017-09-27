@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +28,19 @@ public class RedirectController {
 		}
 		session.setAttribute(GatewayApplication.HEDVIG_SESSION, uid);
 		HedvigToken hid = login(uid);
+		log.debug("SessionID: " + uid.toString() + " UserID: " + hid);
+		
+		return "SessionID: " + uid.toString() + " UserID: " + hid;
+	}
+	
+	@GetMapping("/login/{userId}")
+	String uid(HttpSession session,@PathVariable String userId) {
+		UUID uid = (UUID) session.getAttribute(GatewayApplication.HEDVIG_SESSION);
+		if (uid == null) {
+			uid = UUID.randomUUID();
+		}
+		session.setAttribute(GatewayApplication.HEDVIG_SESSION, uid);
+		HedvigToken hid = login(uid, userId);
 		log.debug("SessionID: " + uid.toString() + " UserID: " + hid);
 		
 		return "SessionID: " + uid.toString() + " UserID: " + hid;
@@ -50,12 +64,13 @@ public class RedirectController {
         return ResponseEntity.status(500).body("error");
     }
 	
-	private void isLoggedIn(HttpSession session) throws NotLoggedInException{
+	public static void isLoggedIn(HttpSession session) throws NotLoggedInException{
 		UUID uid = (UUID) session.getAttribute(GatewayApplication.HEDVIG_SESSION);
 		if(uid == null)throw new NotLoggedInException("Not logged in");
 	}
 	
-	private HedvigToken login(UUID sessionID){
+	public static HedvigToken login(UUID sessionID){
+		log.info("Loggin in session:" + sessionID);
 		HedvigToken hid = GatewayApplication.sessionMap.get(sessionID);
 		if(hid == null){
 			hid = new HedvigToken();
@@ -64,5 +79,16 @@ public class RedirectController {
 		return hid;
 	}
     
+	/*
+	 * Log in with explicit user id. Replaces current hedvig.token in the session
+	 * */
+	public static HedvigToken login(UUID sessionID, String userId){
+		HedvigToken hid = GatewayApplication.sessionMap.get(sessionID);
+		hid = new HedvigToken();
+		hid.setToken(userId);
+		GatewayApplication.sessionMap.put(sessionID, hid);
+		
+		return hid;
+	}
 
 }
