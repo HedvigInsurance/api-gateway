@@ -1,0 +1,7 @@
+language: java
+sudo: required
+services:
+  - docker
+after_success:
+  - bin/docker_push.sh
+  - bin/kubernetes_deploy.sh
