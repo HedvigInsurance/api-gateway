@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.hedvig</groupId>
-	<artifactId>api-gateway2</artifactId>
+	<artifactId>api-gateway</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>API-Gateway1</name>
+	<name>API-Gateway</name>
 	<description>API gateway for Hedvig Back-end</description>
 
   <parent>
