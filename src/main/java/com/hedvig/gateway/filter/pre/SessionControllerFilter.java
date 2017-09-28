@@ -22,56 +22,66 @@ public class SessionControllerFilter extends ZuulFilter {
     private static final String HEADER="hedvig.token";
 
     @Override
-    public String filterType() {
+    public String filterType()
+    {
         return "pre";
     }
 
     @Override
-    public int filterOrder() {
+    public int filterOrder()
+    {
         return 1;
     }
 
     @Override
-    public boolean shouldFilter() {
+    public boolean shouldFilter()
+    {
         return true;
     }
 
     @Override
     public Object run() {
         RequestContext ctx = RequestContext.getCurrentContext();
+
+
         
         HttpServletRequest request = ctx.getRequest();
-        HttpSession httpSession = request.getSession();
-        UUID uid = (UUID) httpSession.getAttribute(GatewayApplication.HEDVIG_SESSION);
-        HedvigToken hid = null;
+        String authHeader = request.getHeader("Authorization");
+
+        String jwt = null;
+        if(authHeader != null && authHeader.startsWith("Bearer ")) {
+            jwt = authHeader.substring(7);
+        }
+
+
+        HedvigToken hid;
         try {
-			hid = GatewayApplication.getToken(uid);
+			hid = GatewayApplication.getToken(jwt);
 		} catch (NotLoggedInException e) {
 			// TODO Auto-generated catch block
 			log.error(e.getMessage());
-			log.info("uid:" + uid);
-			log.info("hid:" + hid);
+			log.info("jwt:" + jwt);
 			
 			/*
 			 * Harsh response. Puts responsibility for login in on client
 			 * */
-			//ctx.unset();
-			//ctx.setResponseBody(e.getMessage());
-			//ctx.setResponseStatusCode(HttpStatus.UNAUTHORIZED.value());
+			ctx.unset();
+			ctx.setResponseBody(e.getMessage());
+			ctx.setResponseStatusCode(HttpStatus.UNAUTHORIZED.value());
 			
 			/*
 			 * Nice response. Server logs in user with new hedvig token.
-			 * */
-			if (uid == null) { uid = UUID.randomUUID(); }
+			 *
+			if (jwt == null) { uid = UUID.randomUUID(); }
 			httpSession.setAttribute(GatewayApplication.HEDVIG_SESSION, uid);
 			HedvigToken ht = RedirectController.login(uid);
 			log.info("Set " + HEADER + " to " + ht.toString());
-			ctx.addZuulRequestHeader(HEADER, ht.toString());
+			ctx.addZuulRequestHeader(HEADER, ht.toString());*/
 			return null;
 		}
         log.info("read this?");
         ctx.addZuulRequestHeader(HEADER, hid.toString());
-        log.info(String.format("%s request to %s hedvig.session:%s", request.getMethod(), request.getRequestURL().toString(),uid.toString()));
+        log.info(String.format("%s request to %s hedvig.session:%s", request.getMethod(), request.getRequestURL().toString(),jwt));
        
         return null;
     }

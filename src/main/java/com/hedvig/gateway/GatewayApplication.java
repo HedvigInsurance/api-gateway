@@ -17,18 +17,18 @@ import com.hedvig.gateway.filter.pre.SessionControllerFilter;
 public class GatewayApplication {
 
 	private static Logger log = LoggerFactory.getLogger(GatewayApplication.class);
-	static TreeMap<UUID, HedvigToken> sessionMap = new TreeMap<UUID, HedvigToken>();
+	static TreeMap<String, HedvigToken> sessionMap = new TreeMap<String, HedvigToken>();
 	public static final String HEDVIG_SESSION ="hedvig.session";
 	
     public static void main(String[] args) {
         SpringApplication.run(GatewayApplication.class, args);
     }
     
-	public static HedvigToken getToken(UUID uid) throws NotLoggedInException{
-		log.info("Requesting getToken with uid:" + uid);
-		if(uid == null)throw new NotLoggedInException("Not logged in");
-		HedvigToken hid = GatewayApplication.sessionMap.get(uid);
-		return hid;
+	public static HedvigToken getToken(String jwt) throws NotLoggedInException{
+		log.info("Requesting getToken with jwt:" + jwt);
+		if(jwt == null || !GatewayApplication.sessionMap.containsKey(jwt))
+			throw new NotLoggedInException("Not logged in");
+		return GatewayApplication.sessionMap.get(jwt);
 	}
 
     @Bean
