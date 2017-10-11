@@ -49,11 +49,6 @@ public class RedirectController {
 	
 	// ---- Mock values TODO: for implmenetation in other servcies  -------- //
 	
-	@GetMapping("/insurance")
-    ResponseEntity<String> getInsurance() {
-		return ResponseEntity.ok("\"{\"insurance\":{\"fire\":{\"state\":\"waiting_for_payment\",\"included_in_base_package\":false,},\"theft\":{\"state\":\"disabled\",\"included_in_base_package\":false},\"waterleak\":{\"state\":\"waiting_for_signing\",\"included_in_base_package\":true},\"assets\":[{\"id\":\"12312412\",\"image_urls\":[...],\"name\":\"Kamera\"\"state\":\"enabled\",\"included_in_base_package\":true},{\"id\":\"1231241124122\",\"image_urls\":[...],\"name\":\"Laptop\"\"state\":\"waiting_for_signing\",\"included_in_base_package\":false}]\"current_total_price\":500\"new_total_price\":600}}}");
-	}
-	
 	// --------------------------------------------------------------------- //
 	
     @Value("${error.path:/error}")
