@@ -30,7 +30,7 @@ public class RedirectController {
 	String login() throws NoSuchAlgorithmException {
 
 		RestTemplate restTemplate = new RestTemplate();
-		ResponseEntity<HelloHedvigResponse> response = restTemplate.postForEntity("http://localhost:4084/member/helloHedvig", HelloHedvigResponse.class);
+		ResponseEntity<HelloHedvigResponse> response = restTemplate.postForEntity("http://localhost:4084/member/helloHedvig", "", HelloHedvigResponse.class);
 
 		String jwt = createJWT();
 		assignJWT(jwt, response.getBody().memberId.toString());
