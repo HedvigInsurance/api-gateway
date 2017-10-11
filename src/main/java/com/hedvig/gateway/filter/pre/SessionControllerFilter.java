@@ -39,7 +39,9 @@ public class SessionControllerFilter extends ZuulFilter {
         RequestContext ctx = RequestContext.getCurrentContext();
         HttpServletRequest request = ctx.getRequest();
         String requestUri = request.getRequestURI();
-        return !requestUri.startsWith("/asset/image/") && !requestUri.startsWith("/helloHedvig");
+        return !requestUri.startsWith("/asset/image/") &&
+                !requestUri.startsWith("/helloHedvig") &&
+                !requestUri.startsWith("/claim/file/");
     }
 
     @Override
