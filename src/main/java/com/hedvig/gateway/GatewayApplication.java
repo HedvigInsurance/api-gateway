@@ -3,6 +3,7 @@ package com.hedvig.gateway;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import com.hedvig.gateway.filter.post.MemberAuthFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -17,7 +18,7 @@ import com.hedvig.gateway.filter.pre.SessionControllerFilter;
 public class GatewayApplication {
 
 	private static Logger log = LoggerFactory.getLogger(GatewayApplication.class);
-	static TreeMap<String, HedvigToken> sessionMap = new TreeMap<String, HedvigToken>();
+	public static TreeMap<String, HedvigToken> sessionMap = new TreeMap<String, HedvigToken>();
 	public static final String HEDVIG_SESSION ="hedvig.session";
 	
     public static void main(String[] args) {
@@ -35,5 +36,10 @@ public class GatewayApplication {
     public SessionControllerFilter payloadFilter() {
         return new SessionControllerFilter();
       }
+
+	@Bean
+	public MemberAuthFilter memberAuthFilter() {
+    	return new MemberAuthFilter();
+	}
  
 }

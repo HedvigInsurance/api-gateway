@@ -1,23 +1,26 @@
 package com.hedvig.gateway;
 
-import java.security.MessageDigest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+import sun.misc.BASE64Encoder;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import sun.misc.BASE64Encoder;
+class HelloHedvigResponse {
+	public Long memberId;
+}
 
 @RestController
 public class RedirectController {
@@ -26,31 +29,18 @@ public class RedirectController {
 
 	private static ConcurrentHashMap<UUID, String> collectMap = new ConcurrentHashMap<>();
 	
-	@PostMapping("/authenticate")
-	String login(@RequestParam String ssn) throws NoSuchAlgorithmException {
+	@GetMapping("/helloHedvig")
+	String login() throws NoSuchAlgorithmException {
 
-        String jwt = "";
-	    for(int i =1; i<=3; i++) {
-            Random r = new Random();
-            byte[] bytes = new byte[10];
-            BASE64Encoder adapter = new BASE64Encoder();
-            r.nextBytes(bytes);
-            jwt += adapter.encode(bytes);
-            if(i<3)
-                jwt += ".";
-        }
+		RestTemplate restTemplate = new RestTemplate();
+		ResponseEntity<HelloHedvigResponse> response = restTemplate.getForEntity("http://localhost:4084/member/helloHedvig", HelloHedvigResponse.class);
 
+		String jwt = createJWT();
+		assignJWT(jwt, response.getBody().memberId.toString());
 
-		UUID collectUid = UUID.randomUUID();
-
-		collectMap.put(collectUid, jwt);
-		HedvigToken hid = assignJWT(jwt, ssn);
-
-		log.debug("SessionID: " + jwt.toString() + " UserID: " + hid);
-		
-		return collectUid.toString();
+		return jwt;
 	}
-	
+
 	@GetMapping("/logout")
 	String logout(HttpSession session) {
 		try {isLoggedIn(session);} catch (NotLoggedInException e) {return e.toString();}
@@ -59,15 +49,6 @@ public class RedirectController {
 		session.removeAttribute(GatewayApplication.HEDVIG_SESSION);
 		return "You are logged out";
 	}
-
-	@GetMapping("/collect")
-    ResponseEntity<String> collect(@RequestParam UUID uuid) {
-	    String jwt = collectMap.get(uuid);
-	    if(jwt == null){
-	        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return ResponseEntity.ok(jwt);
-    }
 	
 	// ---- Mock values TODO: for implmenetation in other servcies  -------- //
 	
@@ -102,6 +83,23 @@ public class RedirectController {
 		GatewayApplication.sessionMap.put(sessionID, hid);
 		
 		return hid;
+	}
+
+	/*
+	 * Creates a fake jwt token.
+	 */
+	private String createJWT() {
+		String jwt = "";
+		for(int i =1; i<=3; i++) {
+			Random r = new Random();
+			byte[] bytes = new byte[10];
+			BASE64Encoder adapter = new BASE64Encoder();
+			r.nextBytes(bytes);
+			jwt += adapter.encode(bytes);
+			if (i < 3)
+				jwt += ".";
+		}
+		return jwt;
 	}
 
 }

@@ -36,22 +36,19 @@ public class SessionControllerFilter extends ZuulFilter {
     @Override
     public boolean shouldFilter()
     {
-        return true;
+        RequestContext ctx = RequestContext.getCurrentContext();
+        HttpServletRequest request = ctx.getRequest();
+        String requestUri = request.getRequestURI();
+        return !requestUri.startsWith("/asset/image/") && !requestUri.startsWith("/helloHedvig");
     }
 
     @Override
     public Object run() {
+
         RequestContext ctx = RequestContext.getCurrentContext();
 
-
-        
         HttpServletRequest request = ctx.getRequest();
-        String authHeader = request.getHeader("Authorization");
-
-        String jwt = null;
-        if(authHeader != null && authHeader.startsWith("Bearer ")) {
-            jwt = authHeader.substring(7);
-        }
+        String jwt = getJwtToken(request);
 
 
         HedvigToken hid;
@@ -81,8 +78,18 @@ public class SessionControllerFilter extends ZuulFilter {
 		}
         log.info("read this?");
         ctx.addZuulRequestHeader(HEADER, hid.toString());
-        log.info(String.format("%s request to %s hedvig.session:%s", request.getMethod(), request.getRequestURL().toString(),jwt));
+        log.info(String.format("%s request to %s with jwt:%s and userId:%s", request.getMethod(), request.getRequestURL().toString(),jwt, hid.getToken()));
        
         return null;
+    }
+
+    public static String getJwtToken(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+
+        String jwt = null;
+        if(authHeader != null && authHeader.startsWith("Bearer ")) {
+            jwt = authHeader.substring(7);
+        }
+        return jwt;
     }
 }
