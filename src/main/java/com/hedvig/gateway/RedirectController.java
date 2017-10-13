@@ -48,7 +48,30 @@ public class RedirectController {
 	}
 	
 	// ---- Mock values TODO: for implmenetation in other servcies  -------- //
-	
+
+	@PostMapping("/checkout")
+	ResponseEntity<Void> initiateUpdate() {
+		return ResponseEntity.noContent().build();
+	}
+
+	@PostMapping("/update-family-members")
+	ResponseEntity<Void> updateFamilyMembers() {
+		return ResponseEntity.noContent().build();
+	}
+
+	@PostMapping("/update-personal-information")
+	ResponseEntity<Void> updatePersonalInformation() {
+		return ResponseEntity.noContent().build();
+	}
+
+	@PostMapping("/update-apartment-information")
+	ResponseEntity<Void> updateApartmentInformation() {
+		return ResponseEntity.noContent().build();
+	}
+
+	@PostMapping("/update-bank-account")
+	ResponseEntity<Void> updateBankAccount() { return ResponseEntity.noContent().build(); }
+
 	// --------------------------------------------------------------------- //
 	
     @Value("${error.path:/error}")
