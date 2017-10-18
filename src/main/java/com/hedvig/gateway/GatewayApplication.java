@@ -8,10 +8,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 import org.springframework.context.annotation.Bean;
 
 import com.hedvig.gateway.filter.pre.SessionControllerFilter;
+import org.springframework.web.client.RestTemplate;
 
 @EnableZuulProxy
 @SpringBootApplication
@@ -40,6 +42,12 @@ public class GatewayApplication {
 	@Bean
 	public MemberAuthFilter memberAuthFilter() {
     	return new MemberAuthFilter();
+	}
+
+	@LoadBalanced
+	@Bean
+	public RestTemplate restTemplate() {
+    	return new RestTemplate();
 	}
  
 }

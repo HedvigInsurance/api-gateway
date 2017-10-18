@@ -2,18 +2,16 @@ package com.hedvig.gateway;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import sun.misc.BASE64Encoder;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 class HelloHedvigResponse {
 	public Long memberId;
@@ -23,19 +21,33 @@ class HelloHedvigResponse {
 public class RedirectController {
      
 	private static Logger log = LoggerFactory.getLogger(RedirectController.class);
+    private final RestTemplate restTemplate;
 
-	private static ConcurrentHashMap<UUID, String> collectMap = new ConcurrentHashMap<>();
-	
-	@PostMapping("/helloHedvig")
-	String login() throws NoSuchAlgorithmException {
+    @Autowired
+    public RedirectController(RestTemplate restTemplate) {
+	    this.restTemplate = restTemplate;
+    }
 
-		RestTemplate restTemplate = new RestTemplate();
-		ResponseEntity<HelloHedvigResponse> response = restTemplate.postForEntity("http://member-service/member/helloHedvig", "", HelloHedvigResponse.class);
+    @PostMapping("/helloHedvig")
+	ResponseEntity<String> login() throws NoSuchAlgorithmException {
 
-		String jwt = createJWT();
-		assignJWT(jwt, response.getBody().memberId.toString());
+		ResponseEntity<HelloHedvigResponse> memberResponse = restTemplate.postForEntity("http://member-service/member/helloHedvig", "", HelloHedvigResponse.class);
+        if(memberResponse.getStatusCode() == HttpStatus.OK) {
 
-		return jwt;
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("hedvig.token", memberResponse.getBody().memberId.toString());
+            HttpEntity<Void> httpEntity = new HttpEntity<>(null,headers);
+            ResponseEntity<Void> botResponse = restTemplate.exchange("http://bot-service/init", HttpMethod.POST, httpEntity, Void.class);
+
+            if(botResponse.getStatusCode() == HttpStatus.NO_CONTENT) {
+                String jwt = createJWT();
+                assignJWT(jwt, memberResponse.getBody().memberId.toString());
+
+                return ResponseEntity.ok(jwt);
+            }
+        }
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\":\"Internal error, please try again.");
 	}
 
 	@PostMapping(value = "/logout", produces = "application/json; charset=utf-8")
