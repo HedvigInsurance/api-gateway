@@ -38,13 +38,17 @@ public class RedirectController {
 		return jwt;
 	}
 
-	@GetMapping("/logout")
-	String logout(HttpSession session) {
-		try {isLoggedIn(session);} catch (NotLoggedInException e) {return e.toString();}
-		UUID uid = (UUID) session.getAttribute(GatewayApplication.HEDVIG_SESSION);
-		GatewayApplication.sessionMap.remove(uid);
-		session.removeAttribute(GatewayApplication.HEDVIG_SESSION);
-		return "You are logged out";
+	@PostMapping(value = "/logout", produces = "application/json; charset=utf-8")
+	String logout(@RequestHeader("Authorization") String authheader) {
+		try {
+			isLoggedIn(authheader);
+		}
+		catch (NotLoggedInException e) {
+			return "{\"message:\": \"You are not logged in\"}";
+		}
+
+		GatewayApplication.sessionMap.remove(getJwt(authheader));
+		return "{\"message\":\"You are logged out\"}";
 	}
 	
 	// ---- Mock values TODO: for implmenetation in other servcies  -------- //
@@ -88,14 +92,23 @@ public class RedirectController {
         return ResponseEntity.status(500).body("error");
     }
 	
-	private static void isLoggedIn(HttpSession session) throws NotLoggedInException{
-		UUID uid = (UUID) session.getAttribute(GatewayApplication.HEDVIG_SESSION);
-		if(uid == null)throw new NotLoggedInException("Not logged in");
+	private static void isLoggedIn(String authHeader) throws NotLoggedInException{
+        String jwt = getJwt(authHeader);
+
+		if(jwt == null || GatewayApplication.sessionMap.get(jwt) == null)throw new NotLoggedInException("Not logged in");
 	}
-    
-	/*
-	 * Log in with explicit user id. Replaces current hedvig.token in the session
-	 * */
+
+    private static String getJwt(String authHeader) {
+        String jwt = null;
+        if(authHeader != null && authHeader.startsWith("Bearer ")) {
+            jwt = authHeader.substring(7);
+        }
+        return jwt;
+    }
+
+    /*
+     * Log in with explicit user id. Replaces current hedvig.token in the session
+     * */
 	private static HedvigToken assignJWT(String sessionID, String userId){
 		HedvigToken hid = new HedvigToken();
         hid.setToken(userId);
