@@ -42,7 +42,7 @@ public class MemberAuthFilter extends ZuulFilter {
         RequestContext ctx = RequestContext.getCurrentContext();
         HttpServletRequest request = ctx.getRequest();
         String requestUri = request.getRequestURI();
-        return requestUri.startsWith("/member/bankid/collect");
+        return requestUri.startsWith("/hedvig/collect");
     }
 
     @Override
