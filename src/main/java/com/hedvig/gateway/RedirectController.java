@@ -29,14 +29,17 @@ public class RedirectController {
     }
 
     @PostMapping("/helloHedvig")
-	ResponseEntity<String> login() throws NoSuchAlgorithmException {
+	ResponseEntity<String> login(@RequestBody(required = false) String json) throws NoSuchAlgorithmException {
 
+    	log.info("Post parameter from client:");
+    	log.info(json);
 		ResponseEntity<HelloHedvigResponse> memberResponse = restTemplate.postForEntity("http://member-service/member/helloHedvig", "", HelloHedvigResponse.class);
         if(memberResponse.getStatusCode() == HttpStatus.OK) {
 
             HttpHeaders headers = new HttpHeaders();
             headers.add("hedvig.token", memberResponse.getBody().memberId.toString());
-            HttpEntity<Void> httpEntity = new HttpEntity<>(null,headers);
+            headers.add("Content-Type", "application/json");
+            HttpEntity<String> httpEntity = new HttpEntity<>(json == null ? "": json,headers);
             ResponseEntity<Void> botResponse = restTemplate.exchange("http://bot-service/init", HttpMethod.POST, httpEntity, Void.class);
 
             if(botResponse.getStatusCode() == HttpStatus.NO_CONTENT) {
