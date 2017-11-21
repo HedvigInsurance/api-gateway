@@ -12,4 +12,12 @@ zuul:
             
 ribbon:
   eureka:
-    enabled: false
+    enabled: falsespring:
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: none
+      format_sql: true
+      naming_strategy: org.hibernate.cfg.ImprovedNamingStrategy
+      show_sql: true
+      dialect: org.hibernate.dialect.PostgreSQLDialect

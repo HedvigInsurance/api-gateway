@@ -1,25 +1,25 @@
 package com.hedvig.gateway.filter.pre;
 
-import com.hedvig.gateway.GatewayApplication;
-import com.hedvig.gateway.HedvigToken;
 import com.hedvig.gateway.NotLoggedInException;
-import com.hedvig.gateway.RedirectController;
+import com.hedvig.gateway.enteties.AuthorizationRow;
+import com.hedvig.gateway.enteties.AuthorizationRowRepository;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
-
-import java.util.UUID;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+
+import javax.servlet.http.HttpServletRequest;
 
 public class SessionControllerFilter extends ZuulFilter {
 
 	private static Logger log = LoggerFactory.getLogger(SessionControllerFilter.class);
     private static final String HEADER="hedvig.token";
+    private final AuthorizationRowRepository authorizationRowRepository;
+
+    public SessionControllerFilter(AuthorizationRowRepository authorizationRowRepository) {
+        this.authorizationRowRepository = authorizationRowRepository;
+    }
 
     @Override
     public String filterType()
@@ -51,17 +51,24 @@ public class SessionControllerFilter extends ZuulFilter {
         RequestContext ctx = RequestContext.getCurrentContext();
 
         HttpServletRequest request = ctx.getRequest();
-        String jwt = getJwtToken(request);
 
 
-        HedvigToken hid;
+
+        AuthorizationRow hid;
+        String jwt = "";
         try {
-			hid = GatewayApplication.getToken(jwt);
-		} catch (NotLoggedInException e) {
+            jwt = getJwtToken(request);
+			hid = authorizationRowRepository.findOne(jwt);
+			if(hid == null) {
+
+			    throw new NotLoggedInException("Not logged in");
+            }
+
+		} catch (Throwable e) {
 			// TODO Auto-generated catch block
 			log.error(e.getMessage());
 			log.info("jwt:" + jwt);
-			
+
 			/*
 			 * Harsh response. Puts responsibility for login in on client
 			 * */
@@ -80,9 +87,10 @@ public class SessionControllerFilter extends ZuulFilter {
 			return null;
 		}
         log.info("read this?");
-        ctx.addZuulRequestHeader(HEADER, hid.toString());
-        log.info(String.format("%s request to %s with jwt:%s and userId:%s", request.getMethod(), request.getRequestURL().toString(),jwt, hid.getToken()));
-       
+        ctx.addZuulRequestHeader(HEADER, hid.memberId);
+        log.info(String.format("%s request to %s with jwt:%s and userId:%s", request.getMethod(), request.getRequestURL().toString(),jwt, hid.memberId));
+
+
         return null;
     }
 

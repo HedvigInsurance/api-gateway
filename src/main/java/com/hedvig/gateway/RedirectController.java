@@ -1,5 +1,7 @@
 package com.hedvig.gateway;
 
+import com.hedvig.gateway.enteties.AuthorizationRow;
+import com.hedvig.gateway.enteties.AuthorizationRowRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +24,13 @@ public class RedirectController {
      
 	private static Logger log = LoggerFactory.getLogger(RedirectController.class);
     private final RestTemplate restTemplate;
+	private final AuthorizationRowRepository repo;
 
     @Autowired
-    public RedirectController(RestTemplate restTemplate) {
+    public RedirectController(RestTemplate restTemplate, AuthorizationRowRepository repo) {
 	    this.restTemplate = restTemplate;
-    }
+		this.repo = repo;
+	}
 
     @PostMapping("/helloHedvig")
 	ResponseEntity<String> login(@RequestBody(required = false) String json) throws NoSuchAlgorithmException {
@@ -62,7 +66,7 @@ public class RedirectController {
 			return "{\"message:\": \"You are not logged in\"}";
 		}
 
-		GatewayApplication.sessionMap.remove(getJwt(authheader));
+		repo.delete(getJwt(authheader));
 		return "{\"message\":\"You are logged out\"}";
 	}
 	
@@ -107,10 +111,11 @@ public class RedirectController {
         return ResponseEntity.status(500).body("error");
     }
 	
-	private static void isLoggedIn(String authHeader) throws NotLoggedInException{
+	private void isLoggedIn(String authHeader) throws NotLoggedInException{
         String jwt = getJwt(authHeader);
 
-		if(jwt == null || GatewayApplication.sessionMap.get(jwt) == null)throw new NotLoggedInException("Not logged in");
+		if(jwt == null || repo.findOne(jwt) == null)
+			throw new NotLoggedInException("Not logged in");
 	}
 
     private static String getJwt(String authHeader) {
@@ -124,13 +129,15 @@ public class RedirectController {
     /*
      * Log in with explicit user id. Replaces current hedvig.token in the session
      * */
-	private static HedvigToken assignJWT(String sessionID, String userId){
-		HedvigToken hid = new HedvigToken();
-        hid.setToken(userId);
+	private void assignJWT(String sessionID, String userId){
+		AuthorizationRow authorizationRow = new AuthorizationRow();
+		authorizationRow.token = sessionID;
+		authorizationRow.memberId = userId;
 
-		GatewayApplication.sessionMap.put(sessionID, hid);
+		repo.save(authorizationRow);
+		//GatewayApplication.sessionMap.put(sessionID, hid);
 		
-		return hid;
+		return;
 	}
 
 	/*
