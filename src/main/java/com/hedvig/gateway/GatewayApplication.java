@@ -17,6 +17,7 @@ import java.util.TreeMap;
 @EnableZuulProxy
 @SpringBootApplication
 //@EnableCaching
+//Before enabling caching figure out how to remove an item from the cache.
 public class GatewayApplication {
 
 	private static Logger log = LoggerFactory.getLogger(GatewayApplication.class);

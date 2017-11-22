@@ -32,7 +32,8 @@ public class RedirectControllerTests {
                 hasFieldOrPropertyWithValue("statusCode", HttpStatus.UNAUTHORIZED);
     }
 // Disable these tests on travis since we cant talk to the other services yet.
-/*    @Test
+/*
+    @Test
     public void RequestWithTokenFromHelloHedvig_IS_Authorized() throws Exception {
 
         ResponseEntity<String> token = this.restTemplate.postForEntity("http://localhost:" + port + "/helloHedvig", "", String.class);

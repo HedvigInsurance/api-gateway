@@ -1,3 +1,61 @@
 spring:
   datasource:
     url: jdbc:h2:mem:product-pricing;MODE=PostgreSQL
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: none
+      format_sql: true
+      naming_strategy: org.hibernate.cfg.ImprovedNamingStrategy
+      show_sql: true
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+
+zuul:
+  routes:
+    asset-tracker:
+      path: /asset/**
+      url: http://localhost:4082/asset/
+    bot-service_messages:
+      path: /messages/**
+      url: http://localhost:4081/messages/
+    bot-service_avatars:
+      path: /avatars/**
+      url: http://localhost:4081/avatars
+    bot-service_chat:
+      path: /chat/**
+      url: http://localhost:4081/chat/
+    bot-service_event:
+      path: /event/**
+      url: http://localhost:4081/event
+    bot-service-collect:
+      path: /member/bankid/collect
+      url: http://localhost:4081/hedvig/collect
+    bot-service_hedvig:
+      path: /hedvig/**
+      url: http://localhost:4081/hedvig
+    bot-service_response:
+      path: /response/**
+      url: http://localhost:4081/response
+    claims-servicer:
+      path: /claim/**
+      url: http://localhost:4081/claim
+    member-service:
+      path: /member/**
+      url: http://localhost:4084/member/
+    product-pricing_cashback:
+      path: /cashback/**
+      url: http://localhost:4085/cashback/
+    product-pricing_insurance:
+      path: /insurance/**
+      url:
+
+bot-service:
+  ribbon:
+    eureka:
+      enabled: false
+    listOfServers: localhost:4081
+member-service:
+  ribbon:
+    eureka:
+      enabled: false
+    listOfServers: localhost:4084
