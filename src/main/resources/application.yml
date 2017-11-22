@@ -12,7 +12,8 @@ zuul:
             
 ribbon:
   eureka:
-    enabled: falsespring:
+    enabled: false
+spring:
   jpa:
     generate-ddl: true
     hibernate:
