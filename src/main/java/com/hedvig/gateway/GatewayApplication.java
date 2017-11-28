@@ -55,6 +55,7 @@ public class GatewayApplication {
 		config.addAllowedMethod("POST");
 		config.setMaxAge(3000l);
 		config.addAllowedHeader("Authorization");
+		config.addAllowedHeader("Content-Type");
 		config.addExposedHeader("location");
 		source.registerCorsConfiguration("/**", config);
 		return new CorsFilter(source);
