@@ -15,6 +15,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static net.logstash.logback.argument.StructuredArguments.value;
+
 public class MemberAuthFilter extends ZuulFilter {
 
     private static Logger log = LoggerFactory.getLogger(MemberAuthFilter.class);
@@ -52,15 +54,14 @@ public class MemberAuthFilter extends ZuulFilter {
 
         Optional<String> userId = headers.stream().filter(p -> Objects.equals(p.first(), "Hedvig.Id")).map(Pair::second).findFirst();
         userId.ifPresent(uid -> {
-            String jwt = null;
+            String jwt;
 
             jwt = SessionControllerFilter.getJwtToken(request);
 
-            log.info("Updating sessionMap(%s,%s)", jwt, uid);
+            log.info("Updating session with new memberId old:{}, new:{})", jwt, value("memberId",uid));
             AuthorizationRow authRow = repo.findOne(jwt);
             authRow.memberId = uid;
             repo.save(authRow);
-
         });
 
         List<Pair<String, String>> filteredHeaders = headers.stream().filter(p -> !Objects.equals(p.first(), "Hedvig.Id")).collect(Collectors.toList());

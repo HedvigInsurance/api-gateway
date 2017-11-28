@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 
 import javax.servlet.http.HttpServletRequest;
 
+import static net.logstash.logback.argument.StructuredArguments.value;
+
 public class SessionControllerFilter extends ZuulFilter {
 
 	private static Logger log = LoggerFactory.getLogger(SessionControllerFilter.class);
@@ -86,9 +88,8 @@ public class SessionControllerFilter extends ZuulFilter {
 			ctx.addZuulRequestHeader(HEADER, ht.toString());*/
 			return null;
 		}
-        log.info("read this?");
         ctx.addZuulRequestHeader(HEADER, hid.memberId);
-        log.info(String.format("%s request to %s with jwt:%s and userId:%s", request.getMethod(), request.getRequestURL().toString(),jwt, hid.memberId));
+        log.info("{} request to {} with jwt:{} for memberId:{}", request.getMethod(), request.getRequestURL().toString(),jwt, value("memberId", hid.memberId));
 
 
         return null;
