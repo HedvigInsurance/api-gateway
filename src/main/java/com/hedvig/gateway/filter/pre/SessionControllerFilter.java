@@ -89,8 +89,7 @@ public class SessionControllerFilter extends ZuulFilter {
 			return null;
 		}
         ctx.addZuulRequestHeader(HEADER, hid.memberId);
-        log.info("{} request to {} with jwt:{} for memberId:{}", request.getMethod(), request.getRequestURL().toString(),jwt, value("memberId", hid.memberId));
-
+        log.info("{} request to {} from memberId:{}", request.getMethod(), request.getRequestURL().toString(), value("memberId", hid.memberId));
 
         return null;
     }
