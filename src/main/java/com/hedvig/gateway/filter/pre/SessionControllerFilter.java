@@ -44,6 +44,7 @@ public class SessionControllerFilter extends ZuulFilter {
         return !requestUri.startsWith("/asset/image") &&
                 !requestUri.startsWith("/helloHedvig") &&
                 !requestUri.startsWith("/claim/file/") &&
+                !requestUri.startsWith("/hedvig/waitlist") &&
                 !requestUri.startsWith("/insurance/contract");
     }
 
