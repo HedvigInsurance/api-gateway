@@ -94,11 +94,6 @@ public class RedirectController {
 
 	@PostMapping("/update-bank-account")
 	ResponseEntity<Void> updateBankAccount() { return ResponseEntity.noContent().build(); }
-
-	@PostMapping("/push-token")
-	ResponseEntity<Void> pushToken(@RequestBody String tokenJson) {
-		return ResponseEntity.noContent().build();
-	}
 	
  	// --------------------------------------------------------------------- //
 	
