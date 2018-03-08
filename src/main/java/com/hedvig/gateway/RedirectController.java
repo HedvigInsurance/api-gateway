@@ -42,7 +42,7 @@ public class RedirectController {
 
             HttpHeaders headers = new HttpHeaders();
             headers.add("hedvig.token", memberResponse.getBody().memberId.toString());
-            headers.add("Content-Type", "application/json");
+            headers.add("Content-Type", "application/json; charset=utf-8");
             HttpEntity<String> httpEntity = new HttpEntity<>(json == null ? "": json,headers);
             ResponseEntity<Void> botResponse = restTemplate.exchange("http://bot-service/init", HttpMethod.POST, httpEntity, Void.class);
 
