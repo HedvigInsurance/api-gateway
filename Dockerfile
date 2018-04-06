@@ -1,5 +1,4 @@
-FROM openjdk:8
-
+FROM dockmob/java
 
 ADD target/api-gateway-0.0.1-SNAPSHOT.jar /
 
