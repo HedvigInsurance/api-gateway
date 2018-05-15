@@ -72,6 +72,12 @@ public class RedirectController {
 	
 	// ---- Mock values TODO: for implmenetation in other servcies  -------- //
 
+
+	@GetMapping("/health")
+	ResponseEntity<?> health() {
+    	return ResponseEntity.ok("");
+	}
+
 	@PostMapping("/checkout")
 	ResponseEntity<Void> initiateUpdate() {
 		return ResponseEntity.noContent().build();
