@@ -14,7 +14,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>1.5.12.RELEASE</version>
+    <version>1.5.13.RELEASE</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
 
@@ -31,6 +31,12 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-devtools</artifactId>
+      <optional>true</optional>
     </dependency>
 
     <dependency>
@@ -72,7 +78,7 @@
       <version>0.2.0.RELEASE</version>
     </dependency>
 
-    <dependency>
+    <!-- <dependency>
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-kubernetes-config</artifactId>
       <version>0.2.0.RELEASE</version>
@@ -81,7 +87,7 @@
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-kubernetes-ribbon</artifactId>
       <version>0.2.0.RELEASE</version>
-    </dependency>
+    </dependency> -->
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
@@ -110,7 +116,7 @@
       <dependency>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-dependencies</artifactId>
-        <version>Dalston.RELEASE</version>
+        <version>Edgware.SR4</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -122,6 +128,11 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <profiles>
+            development
+          </profiles>
+        </configuration>
       </plugin>
     </plugins>
   </build>
