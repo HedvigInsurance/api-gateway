@@ -47,7 +47,7 @@ public class SessionControllerFilter extends ZuulFilter {
                 !requestUri.startsWith("/hedvig/waitlist") &&
                 !requestUri.startsWith("/hedvig/trigger/notification") &&
                 !requestUri.startsWith("/hooks/") &&
-                !requestUri.startsWith("/member/counter/321432") &&
+                !requestUri.startsWith("/insurance/counter") &&
                 !requestUri.startsWith("/insurance/contract");
     }
 
