@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.hedvig</groupId>
-	<artifactId>api-gateway</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+  <groupId>com.hedvig</groupId>
+  <artifactId>api-gateway</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
 
-	<name>API-Gateway</name>
-	<description>API gateway for Hedvig Back-end</description>
+  <name>API-Gateway</name>
+  <description>API gateway for Hedvig Back-end</description>
 
   <parent>
     <groupId>org.springframework.boot</groupId>
@@ -44,7 +45,7 @@
       <artifactId>netflix-commons-util</artifactId>
       <version>0.1.1</version>
     </dependency>
-    
+
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
@@ -110,7 +111,7 @@
     </dependency>
 
   </dependencies>
-  
+
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -122,7 +123,7 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-  
+
   <build>
     <plugins>
       <plugin>
@@ -136,5 +137,5 @@
       </plugin>
     </plugins>
   </build>
-  
+
 </project>

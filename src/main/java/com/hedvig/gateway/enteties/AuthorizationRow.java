@@ -6,8 +6,7 @@ import javax.persistence.Id;
 @Entity
 public class AuthorizationRow {
 
-    @Id
-    public String token;
+  @Id public String token;
 
-    public String memberId;
+  public String memberId;
 }
