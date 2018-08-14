@@ -14,38 +14,39 @@ import org.springframework.web.client.RestTemplate;
 
 @EnableZuulProxy
 @SpringBootApplication
-//@EnableCaching
-//Before enabling caching figure out how to remove an item from the cache.
+// @EnableCaching
+// Before enabling caching figure out how to remove an item from the cache.
 public class GatewayApplication {
 
-	private static Logger log = LoggerFactory.getLogger(GatewayApplication.class);
-	public static final String HEDVIG_SESSION ="hedvig.session";
-	
-    public static void main(String[] args) {
-        SpringApplication.run(GatewayApplication.class, args);
-    }
+  public static final String HEDVIG_SESSION = "hedvig.session";
+  private static Logger log = LoggerFactory.getLogger(GatewayApplication.class);
 
-	@Bean
-    public SessionControllerFilter payloadFilter(AuthorizationRowRepository authorizationRowRepository) {
-        return new SessionControllerFilter(authorizationRowRepository);
-      }
+  public static void main(String[] args) {
+    SpringApplication.run(GatewayApplication.class, args);
+  }
 
-	@Bean
-	public MemberAuthFilter memberAuthFilter(AuthorizationRowRepository authorizationRowRepository) {
-    	return new MemberAuthFilter(authorizationRowRepository);
-	}
+  @Bean
+  public SessionControllerFilter payloadFilter(
+      AuthorizationRowRepository authorizationRowRepository) {
+    return new SessionControllerFilter(authorizationRowRepository);
+  }
 
-	@LoadBalanced
-	@Bean
-	public RestTemplate restTemplate() {
-    	return new RestTemplate();
-	}
+  @Bean
+  public MemberAuthFilter memberAuthFilter(AuthorizationRowRepository authorizationRowRepository) {
+    return new MemberAuthFilter(authorizationRowRepository);
+  }
 
-	/*
-	@CacheEvict(allEntries = true, value = {"authorizationRows"})
-	@Scheduled(fixedDelay = 10 * 60 * 1000 ,  initialDelay = 500)
-	public void reportCacheEvict() {
-		System.out.println("Flush Cache " + Instant.now().toString());
-	}*/
+  @LoadBalanced
+  @Bean
+  public RestTemplate restTemplate() {
+    return new RestTemplate();
+  }
+
+  /*
+  @CacheEvict(allEntries = true, value = {"authorizationRows"})
+  @Scheduled(fixedDelay = 10 * 60 * 1000 ,  initialDelay = 500)
+  public void reportCacheEvict() {
+  	System.out.println("Flush Cache " + Instant.now().toString());
+  }*/
 
 }
