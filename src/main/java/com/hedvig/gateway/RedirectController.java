@@ -135,6 +135,9 @@ public class RedirectController {
 		authorizationRow.token = sessionID;
 		authorizationRow.memberId = userId;
 
+		if(repo.exists(sessionID)) {
+			throw new RuntimeException();
+		}
 		repo.save(authorizationRow);
 		//GatewayApplication.sessionMap.put(sessionID, hid);
 		
