@@ -55,8 +55,7 @@ public class SessionControllerFilter extends ZuulFilter {
                 && !requestUri.startsWith("/hedvig/trigger/notification")
                 && !requestUri.startsWith("/hooks/")
                 && !requestUri.startsWith("/insurance/counter")
-                && !requestUri.startsWith("/insurance/contract")
-                && !requestUri.startsWith("/paymentService/graphql");
+                && !requestUri.startsWith("/insurance/contract");
     }
 
     @Override
@@ -72,8 +71,12 @@ public class SessionControllerFilter extends ZuulFilter {
             jwt = getJwtToken(request);
             hid = authorizationRowRepository.findOne(jwt);
             if (hid == null) {
-
+                if (request.getRequestURI().startsWith("/paymentService/graphql")) {
+                    // To get the schema
+                    return null;
+                }
                 throw new NotLoggedInException("Not logged in");
+
             }
 
         } catch (Throwable e) {
