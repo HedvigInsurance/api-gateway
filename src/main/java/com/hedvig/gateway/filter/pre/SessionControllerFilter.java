@@ -71,7 +71,8 @@ public class SessionControllerFilter extends ZuulFilter {
             jwt = getJwtToken(request);
             hid = authorizationRowRepository.findOne(jwt);
             if (hid == null) {
-                if (request.getRequestURI().startsWith("/paymentService/graphql")) {
+                if (request.getRequestURI().startsWith("/paymentService/graphql")
+                || request.getRequestURI().startsWith("/productPricing/graphql")) {
                     // To get the schema
                     return null;
                 }
