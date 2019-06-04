@@ -17,11 +17,13 @@
     <artifactId>spring-boot-starter-parent</artifactId>
     <version>1.5.21.RELEASE</version>
     <relativePath/> <!-- lookup parent from repository -->
+
   </parent>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>1.8</java.version>
+    <logback.version>1.2.3</logback.version>
   </properties>
 
   <dependencies>
