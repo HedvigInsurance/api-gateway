@@ -59,3 +59,4 @@ member-service:
     eureka:
       enabled: false
     listOfServers: localhost:4084
+  token: ""
