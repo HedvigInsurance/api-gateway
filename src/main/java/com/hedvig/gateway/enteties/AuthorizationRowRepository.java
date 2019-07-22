@@ -8,4 +8,5 @@ public interface AuthorizationRowRepository extends CrudRepository<Authorization
 
   // @Cacheable("authorizationRows")
   AuthorizationRow findOne(String id);
+  AuthorizationRow findByMemberId(String memberId);
 }
