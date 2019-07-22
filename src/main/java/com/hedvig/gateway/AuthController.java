@@ -16,20 +16,23 @@ public class AuthController {
     private final AuthorizationRowRepository repo;
     private final String token;
 
-    public AuthController(AuthorizationRowRepository repo, @Value("{member-service.token}") String token) {
+    public AuthController(AuthorizationRowRepository repo, @Value("${member-service.token}") String token) {
         this.repo = repo;
         this.token = token;
     }
-    @PostMapping
-    public ResponseEntity<String> reassignMember(@RequestHeader("token") String memberServiceToken, @RequestBody ReassignMemberRequest request) {
+    @PostMapping("/_/reassign")
+    public ResponseEntity<Void> reassignMember(@RequestHeader("token") String memberServiceToken, @RequestBody ReassignMemberRequest request) {
         if (!memberServiceToken.equals(token)) {
             return ResponseEntity.status(401).build();
         }
 
-        AuthorizationRow row = repo.findOne(request.getOldMemberId());
+        AuthorizationRow row = repo.findByMemberId(request.getOldMemberId());
+        if (row == null) {
+            return ResponseEntity.notFound().build();
+        }
         row.memberId = request.getNewMemberId();
 
         repo.save(row);
-        return ResponseEntity.ok("");
+        return ResponseEntity.ok().build();
     }
 }

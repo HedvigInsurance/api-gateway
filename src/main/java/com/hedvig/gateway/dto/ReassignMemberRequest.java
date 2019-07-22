@@ -1,8 +1,10 @@
 package com.hedvig.gateway.dto;
 
 public class ReassignMemberRequest {
-    private final String oldMemberId;
-    private final String newMemberId;
+    private String oldMemberId;
+    private String newMemberId;
+
+    public ReassignMemberRequest() {}
 
     public ReassignMemberRequest(String oldMemberId, String newMemberId) {
         this.oldMemberId = oldMemberId;
@@ -15,5 +17,13 @@ public class ReassignMemberRequest {
 
     public String getNewMemberId() {
         return newMemberId;
+    }
+
+    public void setOldMemberId(String oldMemberId) {
+        this.oldMemberId = oldMemberId;
+    }
+
+    public void setNewMemberId(String newMemberId) {
+        this.newMemberId = newMemberId;
     }
 }
