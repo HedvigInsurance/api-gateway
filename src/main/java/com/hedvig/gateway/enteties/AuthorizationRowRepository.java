@@ -5,8 +5,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AuthorizationRowRepository extends CrudRepository<AuthorizationRow, String> {
-
-  // @Cacheable("authorizationRows")
-  AuthorizationRow findOne(String id);
-  AuthorizationRow findByMemberId(String memberId);
+    AuthorizationRow findByMemberId(String memberId);
 }
