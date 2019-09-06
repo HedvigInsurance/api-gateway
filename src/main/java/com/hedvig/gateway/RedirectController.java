@@ -55,7 +55,9 @@ public class RedirectController {
   // ---- Mock values TODO: for implmenetation in other servcies  -------- //
 
   @PostMapping("/helloHedvig")
-  ResponseEntity<String> login(@RequestBody(required = false) String json)
+  ResponseEntity<String> login(
+      @RequestHeader(value = "Accept-Language", required = false) String acceptLanguage,
+      @RequestBody(required = false) String json)
       throws NoSuchAlgorithmException {
 
     log.info("Post parameter from client:");
@@ -67,6 +69,7 @@ public class RedirectController {
 
       HttpHeaders headers = new HttpHeaders();
       headers.add("hedvig.token", memberResponse.getBody().memberId.toString());
+      headers.add("Accept-Language", acceptLanguage);
       headers.add("Content-Type", "application/json; charset=utf-8");
       HttpEntity<String> httpEntity = new HttpEntity<>(json == null ? "" : json, headers);
       ResponseEntity<Void> botResponse =
