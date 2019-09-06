@@ -1,0 +1,82 @@
+server:
+  port: 8081
+spring.datasource.url: jdbc:postgresql://localhost:5432/api_gateway
+spring.datasource.username: postgres
+spring.datasource.password: docker
+spring.jpa.hibernate.ddl-auto: update
+zuul:
+  host:
+    connect-timeout-millis: 3000
+    socket-timeout-millis: 10000
+  routes:
+    asset-tracker:
+      path: /asset/**
+      url: http://localhost:4082/asset/
+    bot-service_messages:
+      path: /messages/**
+      url: http://localhost:4081/messages/
+    bot-service_v2_app:
+      path: /v2/app/**
+      url: http://localhost:4081/v2/app/
+    bot-service_avatars:
+      path: /avatars/**
+      url: http://localhost:4081/avatars
+    bot-service_chat:
+      path: /chat/**
+      url: http://localhost:4081/chat/
+    bot-service_event:
+      path: /event/**
+      url: http://localhost:4081/event
+    bot-service-collect:
+      path: /member/bankid/**
+      url: http://localhost:4081/hedvig/
+    bot-service_hedvig:
+      path: /hedvig/**
+      url: http://localhost:4081/hedvig
+    bot-service_response:
+      path: /response/**
+      url: http://localhost:4081/response
+    claims-servicer:
+      path: /claim/**
+      url: http://localhost:4081/claim
+    member-service:
+      path: /member/**
+      url: http://localhost:4084/member/
+    product-pricing_cashback:
+      path: /cashback/**
+      url: http://localhost:4084/cashback/
+    product-pricing_insurance:
+      path: /insurance/**
+      url: http://localhost:4085/insurance/
+    bot-service_push_token:
+      path: /push-token
+      url: http://localhost:4081/
+    bot-service_supported_languages:
+        path: /supportedLanguages
+        url: http://localhost:4081/
+ribbon:
+  eureka:
+    enabled: false
+spring:
+  cloud:
+    kubernetes:
+      enabled: false
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: none
+      format_sql: true
+      naming_strategy: org.hibernate.cfg.ImprovedNamingStrategy
+      show_sql: true
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+bot-service:
+  ribbon:
+    eureka:
+      enabled: false
+    listOfServers: localhost:4081
+member-service:
+  ribbon:
+    eureka:
+      enabled: false
+    listOfServers: localhost:4084
+  token: ""

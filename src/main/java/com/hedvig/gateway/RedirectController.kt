@@ -31,8 +31,9 @@ constructor(
   private val errorPath: String? = null
 
   @PostMapping("/helloHedvig")
-  fun login(@RequestBody(required = false) json: String?): ResponseEntity<String> {
-    val responseFromHelloHedvig = memberService.helloHedvig(json)
+  fun login(@RequestHeader(value = "Accept-Language", required = false) acceptLanguage: String,
+          @RequestBody(required = false) json: String?): ResponseEntity<String> {
+    val responseFromHelloHedvig = memberService.helloHedvig(acceptLanguage, json)
       ?: return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
 
     var jwt: String
