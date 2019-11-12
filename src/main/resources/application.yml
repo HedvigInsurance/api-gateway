@@ -21,4 +21,4 @@ spring:
       format_sql: true
       naming_strategy: org.hibernate.cfg.ImprovedNamingStrategy
       show_sql: true
-      dialect: org.hibernate.dialect.PostgreSQLDialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
