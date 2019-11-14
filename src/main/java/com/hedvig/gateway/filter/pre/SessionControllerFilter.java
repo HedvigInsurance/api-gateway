@@ -74,7 +74,8 @@ public class SessionControllerFilter extends ZuulFilter {
                 if (request.getRequestURI().startsWith("/paymentService/graphql")
                 || request.getRequestURI().startsWith("/productPricing/graphql")
                 || request.getRequestURI().startsWith("/accountService/graphql")
-                || request.getRequestURI().startsWith("/claimsService/graphql")) {
+                || request.getRequestURI().startsWith("/claimsService/graphql")
+                || request.getRequestURI().startsWith("/lookupService/graphql")) {
                     // To get the schema
                     return null;
                 }
