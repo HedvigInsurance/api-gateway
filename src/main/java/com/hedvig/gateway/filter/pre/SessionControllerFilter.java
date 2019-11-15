@@ -65,11 +65,14 @@ public class SessionControllerFilter extends ZuulFilter {
 
         HttpServletRequest request = ctx.getRequest();
 
-        AuthorizationRow hid;
+        AuthorizationRow hid = null;
         String jwt = "";
         try {
             jwt = getJwtToken(request);
-            hid = authorizationRowRepository.findById(jwt).isPresent() ? authorizationRowRepository.findById(jwt).get() : null;
+            if (jwt != null) {
+                hid = authorizationRowRepository.findById(jwt).orElse(null);
+            }
+
             if (hid == null) {
                 ctx.addZuulRequestHeader(HEADER, null);
                 if (request.getRequestURI().startsWith("/paymentService/graphql")
