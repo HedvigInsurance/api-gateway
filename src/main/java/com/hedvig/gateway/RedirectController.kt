@@ -75,7 +75,7 @@ constructor(
       val bytes = ByteArray(10)
       val adapter = Base64.getEncoder()
       r.nextBytes(bytes)
-      jwt += adapter.encode(bytes)
+      jwt += adapter.encodeToString(bytes)
       if (i < 3) jwt += "."
     }
     return jwt
