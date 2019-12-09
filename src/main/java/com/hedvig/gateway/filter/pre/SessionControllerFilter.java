@@ -1,5 +1,7 @@
 package com.hedvig.gateway.filter.pre;
 
+import brave.Span;
+import brave.Tracer;
 import com.hedvig.gateway.NotLoggedInException;
 import com.hedvig.gateway.enteties.AuthorizationRow;
 import com.hedvig.gateway.enteties.AuthorizationRowRepository;
@@ -18,9 +20,11 @@ public class SessionControllerFilter extends ZuulFilter {
     private static final String HEADER = "hedvig.token";
     private static Logger log = LoggerFactory.getLogger(SessionControllerFilter.class);
     private final AuthorizationRowRepository authorizationRowRepository;
+    private final Tracer tracer;
 
-    public SessionControllerFilter(AuthorizationRowRepository authorizationRowRepository) {
+    public SessionControllerFilter(AuthorizationRowRepository authorizationRowRepository, Tracer tracer) {
         this.authorizationRowRepository = authorizationRowRepository;
+        this.tracer = tracer;
     }
 
     public static String getJwtToken(HttpServletRequest request) {
@@ -110,6 +114,8 @@ public class SessionControllerFilter extends ZuulFilter {
       ctx.addZuulRequestHeader(HEADER, ht.toString());*/
             return null;
         }
+        final Span span = tracer.currentSpan();
+        span.tag("memberId", hid.memberId);
         ctx.addZuulRequestHeader(HEADER, hid.memberId);
         log.info(
                 "{} request to {}?{} from memberId:{}",
