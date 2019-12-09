@@ -1,6 +1,6 @@
 package com.hedvig.gateway.filter.pre;
 
-import brave.Span;
+import brave.SpanCustomizer;
 import brave.Tracer;
 import com.hedvig.gateway.NotLoggedInException;
 import com.hedvig.gateway.enteties.AuthorizationRow;
@@ -114,7 +114,7 @@ public class SessionControllerFilter extends ZuulFilter {
       ctx.addZuulRequestHeader(HEADER, ht.toString());*/
             return null;
         }
-        final Span span = tracer.currentSpan();
+        final SpanCustomizer span = tracer.currentSpanCustomizer();
         span.tag("memberId", hid.memberId);
         ctx.addZuulRequestHeader(HEADER, hid.memberId);
         log.info(
