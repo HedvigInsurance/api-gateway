@@ -1,15 +1,18 @@
 package com.hedvig.gateway.filter.pre;
 
 import brave.SpanCustomizer;
-import brave.Tracer;
 import com.hedvig.gateway.NotLoggedInException;
 import com.hedvig.gateway.enteties.AuthorizationRow;
 import com.hedvig.gateway.enteties.AuthorizationRowRepository;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
+import io.opentracing.Span;
+import io.opentracing.Tracer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+
+import io.opentracing.util.GlobalTracer;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,11 +23,9 @@ public class SessionControllerFilter extends ZuulFilter {
     private static final String HEADER = "hedvig.token";
     private static Logger log = LoggerFactory.getLogger(SessionControllerFilter.class);
     private final AuthorizationRowRepository authorizationRowRepository;
-    private final Tracer tracer;
 
-    public SessionControllerFilter(AuthorizationRowRepository authorizationRowRepository, Tracer tracer) {
+    public SessionControllerFilter(AuthorizationRowRepository authorizationRowRepository) {
         this.authorizationRowRepository = authorizationRowRepository;
-        this.tracer = tracer;
     }
 
     public static String getJwtToken(HttpServletRequest request) {
@@ -64,7 +65,6 @@ public class SessionControllerFilter extends ZuulFilter {
 
     @Override
     public Object run() {
-
         RequestContext ctx = RequestContext.getCurrentContext();
 
         HttpServletRequest request = ctx.getRequest();
@@ -114,8 +114,12 @@ public class SessionControllerFilter extends ZuulFilter {
       ctx.addZuulRequestHeader(HEADER, ht.toString());*/
             return null;
         }
-        final SpanCustomizer span = tracer.currentSpanCustomizer();
-        span.tag("memberId", hid.memberId);
+        final Tracer tracer = GlobalTracer.get();
+        final Span span = tracer.activeSpan();
+        if(span != null){
+            span.setBaggageItem("member_id", hid.memberId);
+        }
+
         ctx.addZuulRequestHeader(HEADER, hid.memberId);
         log.info(
                 "{} request to {}?{} from memberId:{}",

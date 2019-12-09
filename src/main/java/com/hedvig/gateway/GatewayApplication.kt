@@ -1,6 +1,5 @@
 package com.hedvig.gateway
 
-import brave.Tracer
 import com.hedvig.gateway.enteties.AuthorizationRowRepository
 import com.hedvig.gateway.filter.post.MemberAuthFilter
 import com.hedvig.gateway.filter.pre.SessionControllerFilter
@@ -19,9 +18,9 @@ class GatewayApplication {
 
   @Bean
   fun payloadFilter(
-    authorizationRowRepository: AuthorizationRowRepository, tracer: Tracer
+    authorizationRowRepository: AuthorizationRowRepository
   ): SessionControllerFilter {
-    return SessionControllerFilter(authorizationRowRepository, tracer)
+    return SessionControllerFilter(authorizationRowRepository)
   }
 
   @Bean
