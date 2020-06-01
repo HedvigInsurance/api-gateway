@@ -1,0 +1,25 @@
+schema {
+    mutation: Mutation
+    query: Query
+}
+
+type Query {
+}
+
+type Mutation {
+    exchangeToken(input: ExchangeTokenInput!): ExchangeTokenResponse!
+}
+
+input ExchangeTokenInput {
+    token: String!
+}
+
+union ExchangeTokenResponse = ExchangeTokenSuccessResponse | ExchangeTokenFailureResponse
+
+type ExchangeTokenSuccessResponse{
+    token: String!
+}
+
+type ExchangeTokenFailureResponse{
+    reason: String!
+}
