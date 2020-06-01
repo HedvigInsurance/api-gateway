@@ -60,3 +60,5 @@ member-service:
       enabled: false
     listOfServers: localhost:4084
   token: ""
+payment-service:
+  token: ""
