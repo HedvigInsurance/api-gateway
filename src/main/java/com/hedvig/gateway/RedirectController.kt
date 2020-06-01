@@ -3,9 +3,7 @@ package com.hedvig.gateway
 import com.hedvig.gateway.enteties.AuthorizationRow
 import com.hedvig.gateway.enteties.AuthorizationRowRepository
 import com.hedvig.gateway.intergration.memberService.MemberService
-
-import javax.servlet.http.HttpServletRequest
-
+import com.hedvig.gateway.service.TokenService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -18,28 +16,31 @@ import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
-import java.util.*
+import javax.servlet.http.HttpServletRequest
 
 @RestController
 class RedirectController @Autowired
 constructor(
   private val repo: AuthorizationRowRepository,
-  private val memberService: MemberService
+  private val memberService: MemberService,
+  private val tokenService: TokenService
 ) {
 
   @Value("\${error.path:/error}")
   private val errorPath: String? = null
 
   @PostMapping("/helloHedvig")
-  fun login(@RequestHeader(value = "Accept-Language", required = false) acceptLanguage: String,
-          @RequestBody(required = false) json: String?): ResponseEntity<String> {
+  fun login(
+    @RequestHeader(value = "Accept-Language", required = false) acceptLanguage: String,
+    @RequestBody(required = false) json: String?
+  ): ResponseEntity<String> {
     val responseFromHelloHedvig = memberService.helloHedvig(acceptLanguage, json)
       ?: return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
 
     var jwt: String
 
     do {
-      jwt = createJWT()
+      jwt = tokenService.createJWT()
       if (repo.existsById(jwt)) {
         log.error("Duplicate token: {}", jwt)
       } else {
@@ -66,19 +67,6 @@ constructor(
 
     repo.deleteById(getJwt(authheader)!!)
     return "{\"message\":\"You are logged out\"}"
-  }
-
-  private fun createJWT(): String {
-    var jwt = ""
-    for (i in 1..3) {
-      val r = Random()
-      val bytes = ByteArray(10)
-      val adapter = Base64.getEncoder()
-      r.nextBytes(bytes)
-      jwt += adapter.encodeToString(bytes)
-      if (i < 3) jwt += "."
-    }
-    return jwt
   }
 
   @GetMapping("/health")
