@@ -11,7 +11,7 @@ type Mutation {
 }
 
 input ExchangeTokenInput {
-    token: String!
+    exchangeToken: String!
 }
 
 union ExchangeTokenResponse = ExchangeTokenSuccessResponse | ExchangeTokenFailureResponse
