@@ -59,6 +59,8 @@ member-service:
     eureka:
       enabled: false
     listOfServers: localhost:4084
-  token: ""
-payment-service:
-  token: ""
+
+hedvig:
+  service:
+    tokens[0]: memberToken
+    tokens[1]: paymentToken
