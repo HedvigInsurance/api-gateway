@@ -1,11 +1,11 @@
 package com.hedvig.gateway
 
+import com.hedvig.gateway.config.ServiceAccountTokenConfig
 import com.hedvig.gateway.dto.CreateExchangeableTokenRequest
 import com.hedvig.gateway.dto.CreateExchangeableTokenResponse
 import com.hedvig.gateway.dto.ReassignMemberRequest
 import com.hedvig.gateway.enteties.AuthorizationRowRepository
 import com.hedvig.gateway.service.ExchangeService
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -18,15 +18,14 @@ import org.springframework.web.bind.annotation.RestController
 class AuthController(
   private val repo: AuthorizationRowRepository,
   private val exchangeService: ExchangeService,
-  @param:Value("\${member-service.token}") private val memberServiceToken: String,
-  @param:Value("\${payment-service.token}") private val paymentServiceToken: String
+  private val config: ServiceAccountTokenConfig
 ) {
   @PostMapping("reassign")
   fun reassignMember(
     @RequestHeader("token") memberServiceToken: String,
     @RequestBody request: ReassignMemberRequest
   ): ResponseEntity<Void> {
-    if (memberServiceToken != this.memberServiceToken) {
+    if (isValidToken(memberServiceToken)) {
       return ResponseEntity.status(401).build()
     }
 
@@ -42,10 +41,13 @@ class AuthController(
     @RequestHeader("token") paymentServiceToken: String,
     @RequestBody request: CreateExchangeableTokenRequest
   ): ResponseEntity<CreateExchangeableTokenResponse> {
-    if (paymentServiceToken != this.paymentServiceToken) {
+    if (isValidToken(paymentServiceToken)) {
       return ResponseEntity.status(401).build()
     }
+
     val exchangeToken = exchangeService.createExchangeToken(request.memberId)
     return ResponseEntity.ok(CreateExchangeableTokenResponse(exchangeToken = exchangeToken))
   }
+
+  private fun isValidToken(token: String): Boolean = config.tokens.contains(token)
 }
