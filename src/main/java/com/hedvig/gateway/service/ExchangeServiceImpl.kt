@@ -24,7 +24,7 @@ class ExchangeServiceImpl(
     }
 
     val exchangeToken = ExchangeToken(
-      token = tokenService.createJWT(),
+      token = tokenService.createPrefixedJWT(PREFIX),
       memberId = memberId,
       validity = ONE_DAY * 10
     )
@@ -47,5 +47,6 @@ class ExchangeServiceImpl(
 
   companion object {
     const val ONE_DAY = 86_400L
+    const val PREFIX = "EXCHANGE_"
   }
 }

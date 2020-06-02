@@ -18,4 +18,9 @@ class TokenServiceImpl : TokenService {
     }
     return jwt
   }
+
+  override fun createPrefixedJWT(prefix: String): String {
+    val jwt = createJWT()
+    return prefix + jwt
+  }
 }
