@@ -47,6 +47,6 @@ class ExchangeServiceImpl(
 
   companion object {
     const val ONE_DAY = 86_400L
-    const val PREFIX = "EXCHANGE_"
+    const val PREFIX = "EX_"
   }
 }
