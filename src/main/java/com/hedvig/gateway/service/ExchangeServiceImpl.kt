@@ -49,7 +49,8 @@ class ExchangeServiceImpl(
 
     val memberId = activeExchangeTokenMaybe.get().memberId
 
-    val token = authorizationRowRepository.findByMemberId(memberId).token
+    val token: String = authorizationRowRepository.findByMemberId(memberId)?.token
+      ?: return ExchangeTokenResponse.ExchangeTokenInvalidResponse
 
     return ExchangeTokenResponse.ExchangeTokenSuccessResponse(token = token)
   }
