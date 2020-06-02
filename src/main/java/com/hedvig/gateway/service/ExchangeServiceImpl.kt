@@ -4,6 +4,7 @@ import com.hedvig.gateway.enteties.AuthorizationRow
 import com.hedvig.gateway.enteties.AuthorizationRowRepository
 import com.hedvig.gateway.enteties.ExchangeToken
 import com.hedvig.gateway.enteties.ExchangeTokenRepository
+import com.hedvig.gateway.graphql.types.ExchangeTokenResponse
 import org.springframework.stereotype.Service
 
 @Service
@@ -33,16 +34,24 @@ class ExchangeServiceImpl(
     return exchangeToken.token
   }
 
-  override fun exchangeToken(exchangeToken: String): String? {
-    val activeExchangeTokenMaybe = exchangeTokenRepository.findById(exchangeToken).filter { it.isValid() }
+  override fun exchangeToken(exchangeToken: String): ExchangeTokenResponse {
+    val exchangeTokenMaybe = exchangeTokenRepository.findById(exchangeToken)
+
+    if (!exchangeTokenMaybe.isPresent) {
+      return ExchangeTokenResponse.ExchangeTokenInvalidResponse
+    }
+
+    val activeExchangeTokenMaybe = exchangeTokenMaybe.filter { it.isValid() }
 
     if (!activeExchangeTokenMaybe.isPresent) {
-      return null
+      return ExchangeTokenResponse.ExchangeTokenExpiredResponse
     }
 
     val memberId = activeExchangeTokenMaybe.get().memberId
 
-    return authorizationRowRepository.findByMemberId(memberId).token
+    val token = authorizationRowRepository.findByMemberId(memberId).token
+
+    return ExchangeTokenResponse.ExchangeTokenSuccessResponse(token = token)
   }
 
   companion object {

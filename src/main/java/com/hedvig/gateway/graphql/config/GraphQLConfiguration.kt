@@ -12,7 +12,8 @@ class GraphQLConfiguration {
     return SchemaParserDictionary().add(
       dictionary = listOf(
         ExchangeTokenResponse.ExchangeTokenSuccessResponse::class.java,
-        ExchangeTokenResponse.ExchangeTokenFailureResponse::class.java
+        ExchangeTokenResponse.ExchangeTokenExpiredResponse::class.java,
+        ExchangeTokenResponse.ExchangeTokenInvalidResponse::class.java
       )
     )
   }

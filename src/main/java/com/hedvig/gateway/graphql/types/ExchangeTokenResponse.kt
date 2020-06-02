@@ -6,7 +6,7 @@ sealed class ExchangeTokenResponse {
     val token: String
   ) : ExchangeTokenResponse()
 
-  data class ExchangeTokenFailureResponse(
-    val reason: String
-  ) : ExchangeTokenResponse()
+  object ExchangeTokenInvalidResponse : ExchangeTokenResponse()
+
+  object ExchangeTokenExpiredResponse : ExchangeTokenResponse()
 }

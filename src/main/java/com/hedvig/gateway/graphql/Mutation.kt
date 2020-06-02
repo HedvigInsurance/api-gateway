@@ -11,8 +11,6 @@ class Mutation(
   val exchangeService: ExchangeService
 ) : GraphQLMutationResolver {
   fun exchangeToken(input: ExchangeTokenInput): ExchangeTokenResponse {
-    val token = exchangeService.exchangeToken(input.exchangeToken)
-      ?: return ExchangeTokenResponse.ExchangeTokenFailureResponse("No token found")
-    return ExchangeTokenResponse.ExchangeTokenSuccessResponse(token)
+    return exchangeService.exchangeToken(input.exchangeToken)
   }
 }

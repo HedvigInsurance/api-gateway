@@ -14,12 +14,12 @@ input ExchangeTokenInput {
     exchangeToken: String!
 }
 
-union ExchangeTokenResponse = ExchangeTokenSuccessResponse | ExchangeTokenFailureResponse
+union ExchangeTokenResponse = ExchangeTokenSuccessResponse | ExchangeTokenExpiredResponse | ExchangeTokenInvalidResponse
 
 type ExchangeTokenSuccessResponse{
     token: String!
 }
 
-type ExchangeTokenFailureResponse{
-    reason: String!
+type ExchangeTokenExpiredResponse{
 }
+type ExchangeTokenInvalidResponse{}
