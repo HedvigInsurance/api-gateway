@@ -17,6 +17,17 @@ class ExchangeToken(
   val memberId: String,
   val validity: Long
 ) {
+  constructor(
+    token: String,
+    memberId: String,
+    validity: Long
+  ) : this(
+    id = 0,
+    token = token,
+    memberId = memberId,
+    validity = validity
+  )
+
   @CreationTimestamp
   var createdAt: Instant = Instant.now()
 
