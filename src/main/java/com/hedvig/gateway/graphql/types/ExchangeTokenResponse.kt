@@ -6,7 +6,11 @@ sealed class ExchangeTokenResponse {
     val token: String
   ) : ExchangeTokenResponse()
 
-  object ExchangeTokenInvalidResponse : ExchangeTokenResponse()
+  object ExchangeTokenInvalidResponse : ExchangeTokenResponse() {
+    const val `_`: Boolean = true
+  }
 
-  object ExchangeTokenExpiredResponse : ExchangeTokenResponse()
+  object ExchangeTokenExpiredResponse : ExchangeTokenResponse() {
+    const val `_`: Boolean = true
+  }
 }
