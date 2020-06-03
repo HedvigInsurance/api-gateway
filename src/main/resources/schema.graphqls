@@ -4,6 +4,7 @@ schema {
 }
 
 type Query {
+    __gateway: Boolean
 }
 
 type Mutation {
@@ -16,13 +17,13 @@ input ExchangeTokenInput {
 
 union ExchangeTokenResponse = ExchangeTokenSuccessResponse | ExchangeTokenExpiredResponse | ExchangeTokenInvalidResponse
 
-type ExchangeTokenSuccessResponse{
+type ExchangeTokenSuccessResponse {
     token: String!
 }
 
-type ExchangeTokenExpiredResponse{
+type ExchangeTokenExpiredResponse {
     _: Boolean
 }
-type ExchangeTokenInvalidResponse{
+type ExchangeTokenInvalidResponse {
     _: Boolean
 }
