@@ -1,24 +1,31 @@
 package com.hedvig.gateway
 
+import com.hedvig.gateway.config.ServiceAccountTokenConfig
+import com.hedvig.gateway.dto.CreateExchangeableTokenRequest
+import com.hedvig.gateway.dto.CreateExchangeableTokenResponse
 import com.hedvig.gateway.dto.ReassignMemberRequest
-import com.hedvig.gateway.enteties.AuthorizationRow
 import com.hedvig.gateway.enteties.AuthorizationRowRepository
-
-import org.springframework.beans.factory.annotation.Value
+import com.hedvig.gateway.service.ExchangeService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
+@RequestMapping("_")
 class AuthController(
   private val repo: AuthorizationRowRepository,
-  @param:Value("\${member-service.token}") private val token: String
+  private val exchangeService: ExchangeService,
+  private val config: ServiceAccountTokenConfig
 ) {
-  @PostMapping("/_/reassign")
-  fun reassignMember(@RequestHeader("token") memberServiceToken: String, @RequestBody request: ReassignMemberRequest): ResponseEntity<Void> {
-    if (memberServiceToken != token) {
+  @PostMapping("reassign")
+  fun reassignMember(
+    @RequestHeader("token") memberServiceToken: String,
+    @RequestBody request: ReassignMemberRequest
+  ): ResponseEntity<Void> {
+    if (isValidToken(memberServiceToken)) {
       return ResponseEntity.status(401).build()
     }
 
@@ -28,4 +35,19 @@ class AuthController(
     repo.save(row)
     return ResponseEntity.ok().build()
   }
+
+  @PostMapping("exchangeableToken/create")
+  fun createExchangeableToken(
+    @RequestHeader("token") paymentServiceToken: String,
+    @RequestBody request: CreateExchangeableTokenRequest
+  ): ResponseEntity<CreateExchangeableTokenResponse> {
+    if (isValidToken(paymentServiceToken)) {
+      return ResponseEntity.status(401).build()
+    }
+
+    val exchangeToken = exchangeService.createExchangeToken(request.memberId)
+    return ResponseEntity.ok(CreateExchangeableTokenResponse(exchangeToken = exchangeToken))
+  }
+
+  private fun isValidToken(token: String): Boolean = config.tokens.contains(token)
 }

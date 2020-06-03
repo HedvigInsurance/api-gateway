@@ -9,7 +9,7 @@ zuul:
     bot-service_response:
       path: /response/**
       url: http://localhost:4081/response/
-            
+
 ribbon:
   eureka:
     enabled: false
@@ -22,3 +22,8 @@ spring:
       naming_strategy: org.hibernate.cfg.ImprovedNamingStrategy
       show_sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+hedvig:
+  service:
+    tokens[0]: memberToken
+    tokens[1]: paymentToken

@@ -1,0 +1,8 @@
+mutation {
+    exchangeToken(input: {exchangeToken: "inputToken"}) {
+        ... on ExchangeTokenExpiredResponse{
+            __typename
+            _
+        }
+    }
+}

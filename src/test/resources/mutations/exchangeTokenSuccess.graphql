@@ -1,0 +1,7 @@
+mutation {
+    exchangeToken(input: {exchangeToken: "inputToken"}) {
+        ... on ExchangeTokenSuccessResponse {
+            token
+        }
+    }
+}

@@ -1,6 +1,5 @@
 package com.hedvig.gateway.filter.pre;
 
-import brave.SpanCustomizer;
 import com.hedvig.gateway.NotLoggedInException;
 import com.hedvig.gateway.enteties.AuthorizationRow;
 import com.hedvig.gateway.enteties.AuthorizationRowRepository;

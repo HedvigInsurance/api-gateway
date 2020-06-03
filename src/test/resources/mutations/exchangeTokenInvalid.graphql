@@ -1,0 +1,8 @@
+mutation {
+    exchangeToken(input: {exchangeToken: "inputToken"}) {
+        ... on ExchangeTokenInvalidResponse{
+            __typename
+            _
+        }
+    }
+}
