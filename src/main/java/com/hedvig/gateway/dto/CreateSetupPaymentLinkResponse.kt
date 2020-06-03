@@ -1,5 +1,5 @@
 package com.hedvig.gateway.dto
 
-data class CreatePayInConnectionLinkResponse(
+data class CreateSetupPaymentLinkResponse(
   val url: String
 )

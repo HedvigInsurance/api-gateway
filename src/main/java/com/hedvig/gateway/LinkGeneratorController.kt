@@ -1,8 +1,8 @@
 package com.hedvig.gateway
 
 import com.hedvig.gateway.config.ServiceAccountTokenConfig
-import com.hedvig.gateway.dto.CreatePayInConnectionLinkRequest
-import com.hedvig.gateway.dto.CreatePayInConnectionLinkResponse
+import com.hedvig.gateway.dto.CreateSetupPaymentLinkRequest
+import com.hedvig.gateway.dto.CreateSetupPaymentLinkResponse
 import com.hedvig.gateway.service.ExchangeService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.ResponseEntity
@@ -18,24 +18,23 @@ class LinkGeneratorController(
   private val config: ServiceAccountTokenConfig,
   private val exchangeService: ExchangeService
 ) {
+  @Value("\${hedvig.paymentSetupLink}")
+  lateinit var paymentSetupLink: String
 
-  @Value("\${hedvig.paymentLink}")
-  lateinit var paymentLink: String
-
-  @PostMapping("payInConnectionLink/create")
-  fun createPayInConnectionLink(
+  @PostMapping("setupPaymentLink/create")
+  fun createSetupPaymentLink(
     @RequestHeader("token") serviceToken: String,
-    @RequestBody request: CreatePayInConnectionLinkRequest
-  ): ResponseEntity<CreatePayInConnectionLinkResponse> {
+    @RequestBody request: CreateSetupPaymentLinkRequest
+  ): ResponseEntity<CreateSetupPaymentLinkResponse> {
     if (config.tokens.contains(serviceToken)) {
       return ResponseEntity.status(401).build()
     }
 
     val exchangeToken = exchangeService.createExchangeToken(request.memberId)
 
-    val finalUrl = paymentLink.replace(TOKEN_PLACEHOLDER, exchangeToken)
+    val finalUrl = paymentSetupLink.replace(TOKEN_PLACEHOLDER, exchangeToken)
 
-    return ResponseEntity.ok(CreatePayInConnectionLinkResponse(url = finalUrl))
+    return ResponseEntity.ok(CreateSetupPaymentLinkResponse(url = finalUrl))
   }
 
   companion object {

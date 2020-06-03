@@ -64,4 +64,4 @@ hedvig:
   service:
     tokens[0]: memberToken
     tokens[1]: paymentToken
-  paymentLink: test
+  paymentSetupLink: test
