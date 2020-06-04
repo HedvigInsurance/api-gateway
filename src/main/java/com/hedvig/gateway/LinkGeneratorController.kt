@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.net.URLEncoder
 
 @RestController
 @RequestMapping("_")
@@ -30,7 +31,7 @@ class LinkGeneratorController(
       return ResponseEntity.status(401).build()
     }
 
-    val exchangeToken = exchangeService.createExchangeToken(request.memberId)
+    val exchangeToken = URLEncoder.encode(exchangeService.createExchangeToken(request.memberId), "UTF-8")
 
     val finalUrl = paymentSetupLink.replace(TOKEN_PLACEHOLDER, exchangeToken)
 

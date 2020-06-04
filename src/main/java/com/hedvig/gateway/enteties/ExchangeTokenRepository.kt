@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface ExchangeTokenRepository : CrudRepository<ExchangeToken, Long> {
   fun findByMemberId(memberId: String): List<ExchangeToken>
+  fun findByToken(token: String): ExchangeToken?
 }

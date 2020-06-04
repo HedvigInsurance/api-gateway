@@ -35,19 +35,14 @@ class ExchangeServiceImpl(
   }
 
   override fun exchangeToken(exchangeToken: String): ExchangeTokenResponse {
-    val exchangeTokenMaybe = exchangeTokenRepository.findById(exchangeToken)
+    val exchangeTokenEntity = exchangeTokenRepository.findByToken(exchangeToken)
+        ?: return ExchangeTokenResponse.ExchangeTokenInvalidResponse
 
-    if (!exchangeTokenMaybe.isPresent) {
-      return ExchangeTokenResponse.ExchangeTokenInvalidResponse
-    }
-
-    val activeExchangeTokenMaybe = exchangeTokenMaybe.filter { it.isValid() }
-
-    if (!activeExchangeTokenMaybe.isPresent) {
+    if (!exchangeTokenEntity.isValid()) {
       return ExchangeTokenResponse.ExchangeTokenExpiredResponse
     }
 
-    val memberId = activeExchangeTokenMaybe.get().memberId
+    val memberId = exchangeTokenEntity.memberId
 
     val token: String = authorizationRowRepository.findByMemberId(memberId)?.token
       ?: return ExchangeTokenResponse.ExchangeTokenInvalidResponse
