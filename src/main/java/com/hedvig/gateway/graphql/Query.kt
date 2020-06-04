@@ -5,5 +5,5 @@ import org.springframework.stereotype.Component
 
 @Component
 class Query : GraphQLQueryResolver {
-    fun __gateway(): Boolean = true
+    fun gateway__(): Boolean = true
 }
