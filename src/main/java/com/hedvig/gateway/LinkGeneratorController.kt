@@ -27,7 +27,7 @@ class LinkGeneratorController(
     @RequestHeader("token") serviceToken: String,
     @RequestBody request: CreateSetupPaymentLinkRequest
   ): ResponseEntity<CreateSetupPaymentLinkResponse> {
-    if (config.tokens.contains(serviceToken)) {
+    if (!isValidToken(serviceToken)) {
       return ResponseEntity.status(401).build()
     }
 
@@ -37,6 +37,8 @@ class LinkGeneratorController(
 
     return ResponseEntity.ok(CreateSetupPaymentLinkResponse(url = finalUrl))
   }
+
+  private fun isValidToken(token: String): Boolean = config.tokens.contains(token)
 
   companion object {
     const val TOKEN_PLACEHOLDER = "TOKEN_PLACEHOLDER"

@@ -25,7 +25,7 @@ class AuthController(
     @RequestHeader("token") memberServiceToken: String,
     @RequestBody request: ReassignMemberRequest
   ): ResponseEntity<Void> {
-    if (isValidToken(memberServiceToken)) {
+    if (!isValidToken(memberServiceToken)) {
       return ResponseEntity.status(401).build()
     }
 
@@ -41,7 +41,7 @@ class AuthController(
     @RequestHeader("token") paymentServiceToken: String,
     @RequestBody request: CreateExchangeableTokenRequest
   ): ResponseEntity<CreateExchangeableTokenResponse> {
-    if (isValidToken(paymentServiceToken)) {
+    if (!isValidToken(paymentServiceToken)) {
       return ResponseEntity.status(401).build()
     }
 
