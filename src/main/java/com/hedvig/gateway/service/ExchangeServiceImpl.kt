@@ -14,7 +14,7 @@ class ExchangeServiceImpl(
   val tokenService: TokenService
 ) : ExchangeService {
   override fun createExchangeToken(memberId: String): String {
-    var tokenMaybe = authorizationRowRepository.findByMemberId(memberId)
+    var tokenMaybe = authorizationRowRepository.findTopByMemberIdOrderByCreatedAtDesc(memberId)
 
     if (tokenMaybe == null) {
       tokenMaybe = AuthorizationRow().also {
@@ -36,7 +36,7 @@ class ExchangeServiceImpl(
 
   override fun exchangeToken(exchangeToken: String): ExchangeTokenResponse {
     val exchangeTokenEntity = exchangeTokenRepository.findByToken(exchangeToken)
-        ?: return ExchangeTokenResponse.ExchangeTokenInvalidResponse
+      ?: return ExchangeTokenResponse.ExchangeTokenInvalidResponse
 
     if (!exchangeTokenEntity.isValid()) {
       return ExchangeTokenResponse.ExchangeTokenExpiredResponse
@@ -44,7 +44,7 @@ class ExchangeServiceImpl(
 
     val memberId = exchangeTokenEntity.memberId
 
-    val token: String = authorizationRowRepository.findByMemberId(memberId)?.token
+    val token: String = authorizationRowRepository.findTopByMemberIdOrderByCreatedAtDesc(memberId)?.token
       ?: return ExchangeTokenResponse.ExchangeTokenInvalidResponse
 
     return ExchangeTokenResponse.ExchangeTokenSuccessResponse(token = token)

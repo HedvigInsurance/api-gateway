@@ -14,7 +14,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.test.context.junit4.SpringRunner
 import java.time.Instant
-import java.util.Optional
 
 @RunWith(SpringRunner::class)
 class ExchangeServiceTest {
@@ -38,7 +37,7 @@ class ExchangeServiceTest {
             tokenService
         )
 
-        every { authorizationRowRepository.findByMemberId(any()) } returns null
+        every { authorizationRowRepository.findTopByMemberIdOrderByCreatedAtDesc(any()) } returns null
         every { authorizationRowRepository.save(any<AuthorizationRow>()) } returns null
         every { exchangeTokenRepository.save(any<ExchangeToken>()) } returns null
         every { tokenService.createPrefixedJWT(any()) } returns "token"
@@ -48,7 +47,7 @@ class ExchangeServiceTest {
 
     @Test
     fun verifyThatWeSaveNewExchangeToken() {
-        every { authorizationRowRepository.findByMemberId(any()) } returns AuthorizationRow()
+        every { authorizationRowRepository.findTopByMemberIdOrderByCreatedAtDesc(any()) } returns AuthorizationRow()
 
         exchangeService.createExchangeToken("memberId")
 
@@ -94,7 +93,7 @@ class ExchangeServiceTest {
 
     @Test
     fun expectThatWeRespondWithExchangeTokenSuccessResponse_WhenTheTokenIAvailable() {
-        every { authorizationRowRepository.findByMemberId(any()) } returns AuthorizationRow().also {
+        every { authorizationRowRepository.findTopByMemberIdOrderByCreatedAtDesc(any()) } returns AuthorizationRow().also {
             it.token = "TOKEN"
         }
         every { exchangeTokenRepository.findByToken(any()) } returns ExchangeToken(

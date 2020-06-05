@@ -29,7 +29,10 @@ class AuthController(
       return ResponseEntity.status(401).build()
     }
 
-    val row = repo.findByMemberId(request.oldMemberId) ?: return ResponseEntity.notFound().build()
+    val row =
+      repo.findTopByMemberIdOrderByCreatedAtDesc(request.oldMemberId)
+        ?: return ResponseEntity.notFound()
+          .build()
     row.memberId = request.newMemberId
 
     repo.save(row)
