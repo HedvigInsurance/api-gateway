@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AuthorizationRowRepository extends CrudRepository<AuthorizationRow, String> {
-    AuthorizationRow findByMemberId(String memberId);
+    AuthorizationRow findTopByMemberIdOrderByCreatedAtDesc(String memberId);
 }
