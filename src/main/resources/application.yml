@@ -27,4 +27,6 @@ hedvig:
   service:
     tokens[0]: memberToken
     tokens[1]: paymentToken
-  paymentSetupLink: test
+  paymentSetupLink:
+    sweden: test-se-TOKEN_PLACEHOLDER
+    norway: test-no-TOKEN_PLACEHOLDER
