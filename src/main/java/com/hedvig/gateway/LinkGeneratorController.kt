@@ -4,6 +4,7 @@ import com.hedvig.gateway.config.ServiceAccountTokenConfig
 import com.hedvig.gateway.dto.CreateSetupPaymentLinkRequest
 import com.hedvig.gateway.dto.CreateSetupPaymentLinkResponse
 import com.hedvig.gateway.service.ExchangeService
+import com.neovisionaries.i18n.CountryCode
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -19,8 +20,11 @@ class LinkGeneratorController(
   private val config: ServiceAccountTokenConfig,
   private val exchangeService: ExchangeService
 ) {
-  @Value("\${hedvig.paymentSetupLink}")
-  lateinit var paymentSetupLink: String
+  @Value("\${hedvig.paymentSetupLink.sweden}")
+  lateinit var swedishPaymentSetupLink: String
+
+  @Value("\${hedvig.paymentSetupLink.norway}")
+  lateinit var norwegianPaymentSetupLink: String
 
   @PostMapping("setupPaymentLink/create")
   fun createSetupPaymentLink(
@@ -33,7 +37,10 @@ class LinkGeneratorController(
 
     val exchangeToken = URLEncoder.encode(exchangeService.createExchangeToken(request.memberId), "UTF-8")
 
-    val finalUrl = paymentSetupLink.replace(TOKEN_PLACEHOLDER, exchangeToken)
+    val finalUrl = when (request.countryCode) {
+      CountryCode.NO -> norwegianPaymentSetupLink
+      else -> swedishPaymentSetupLink
+    }.replace(TOKEN_PLACEHOLDER, exchangeToken)
 
     return ResponseEntity.ok(CreateSetupPaymentLinkResponse(url = finalUrl))
   }
