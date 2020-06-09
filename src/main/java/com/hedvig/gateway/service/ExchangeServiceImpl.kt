@@ -27,7 +27,7 @@ class ExchangeServiceImpl(
     val exchangeToken = ExchangeToken(
       token = tokenService.createPrefixedJWT(PREFIX),
       memberId = memberId,
-      validity = ONE_DAY * 10
+      validity = ONE_DAY * 3
     )
 
     exchangeTokenRepository.save(exchangeToken)
